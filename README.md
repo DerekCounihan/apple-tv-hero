@@ -2,6 +2,10 @@
 
 An Apple TV-style parallax hero effect for Next.js with color extraction, blur transitions, and Ken Burns animation.
 
+<p align="center">
+  <img src="public/demo.gif" alt="Apple TV Hero Demo" width="320" />
+</p>
+
 ## Features
 
 - **Color Extraction** - Automatically extracts the dominant color from images using canvas sampling
