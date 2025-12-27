@@ -46,8 +46,8 @@ export function SampleCard({
         className
       )}
     >
-      {/* Image container with aspect ratio */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden">
+      {/* Image container with square aspect ratio */}
+      <div className="relative aspect-square w-full overflow-hidden">
         <Image
           src={image}
           alt={title}
@@ -66,7 +66,7 @@ export function SampleCard({
 
         {/* Text content */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2">
+          <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2 font-[family-name:var(--font-space-grotesk)] tracking-tight">
             {title}
           </h3>
           <p className="mt-1 text-white/70 text-sm line-clamp-1">{subtitle}</p>

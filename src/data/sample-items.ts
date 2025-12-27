@@ -2,6 +2,7 @@ export interface SampleItem {
   id: string;
   title: string;
   subtitle: string;
+  tagline: string;
   description: string;
   image: string;
   stats?: {
@@ -12,61 +13,79 @@ export interface SampleItem {
 
 /**
  * Sample items for the demo
- * Using Unsplash Source for placeholder images
+ * Using movie poster style images for a cinematic feel
  */
 export const sampleItems: SampleItem[] = [
   {
     id: "1",
-    title: "Mountain Adventure",
-    subtitle: "Explore the peaks",
+    title: "Interstellar",
+    subtitle: "A journey beyond the stars",
+    tagline:
+      "Mankind was born on Earth. It was never meant to die here. A team of explorers travel through a wormhole in space.",
     description:
-      "A breathtaking journey through the highest peaks of the Alps. Experience the thrill of climbing, the serenity of alpine lakes, and the majesty of snow-capped summits that touch the sky.",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&h=800&fit=crop",
+      "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans.",
+    image:
+      "https://images.unsplash.com/photo-1462332420958-a05d1e002413?w=800&h=800&fit=crop",
     stats: { progress: 3, total: 5 },
   },
   {
     id: "2",
-    title: "Ocean Dreams",
-    subtitle: "Dive into the blue",
+    title: "The Deep",
+    subtitle: "What lies beneath",
+    tagline:
+      "In the darkest depths of the ocean, something ancient awakens. Some discoveries were never meant to be made.",
     description:
-      "Discover the wonders beneath the waves. From vibrant coral reefs to mysterious deep-sea creatures, the ocean holds secrets waiting to be explored by those brave enough to dive in.",
-    image: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=800&h=800&fit=crop",
+      "A deep-sea research team encounters an unknown species in the Mariana Trench, forcing them to fight for survival against creatures that have evolved in complete darkness for millions of years.",
+    image:
+      "https://images.unsplash.com/photo-1551244072-5d12893278ab?w=800&h=800&fit=crop",
     stats: { progress: 7, total: 10 },
   },
   {
     id: "3",
-    title: "Forest Escape",
-    subtitle: "Find your peace",
+    title: "Into the Wild",
+    subtitle: "Find yourself",
+    tagline:
+      "He gave away everything he owned and disappeared into the wilderness. This is the true story of his journey.",
     description:
-      "Step into ancient woodlands where time seems to stand still. The whisper of leaves, the song of birds, and the dappled sunlight create a sanctuary for the soul.",
-    image: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&h=800&fit=crop",
+      "After graduating from Emory University, Christopher McCandless abandons his possessions, gives his entire savings to charity, and hitchhikes to Alaska to live in the wilderness alone.",
+    image:
+      "https://images.unsplash.com/photo-1476820865390-c52aeebb9891?w=800&h=800&fit=crop",
     stats: { progress: 2, total: 4 },
   },
   {
     id: "4",
-    title: "City Nights",
-    subtitle: "Urban exploration",
+    title: "Neon Dreams",
+    subtitle: "The city never sleeps",
+    tagline:
+      "In a city of eight million people, she's looking for the one who got away. Every street corner tells a story.",
     description:
-      "When the sun sets, the city comes alive with a different energy. Neon lights reflect off wet streets, and every corner holds a new adventure waiting to unfold.",
-    image: "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=800&fit=crop",
+      "A photographer captures the hidden stories of Tokyo's neon-lit streets, where tradition meets technology and lonely souls search for connection in the world's largest metropolis.",
+    image:
+      "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&h=800&fit=crop",
     stats: { progress: 5, total: 8 },
   },
   {
     id: "5",
-    title: "Desert Horizons",
-    subtitle: "Endless golden sands",
+    title: "Dune",
+    subtitle: "Beyond fear, destiny awaits",
+    tagline:
+      "A mythic journey of a young hero, born into a world of conflict. His fate is written in the sands of time.",
     description:
-      "Where the earth meets the sky in a dance of light and shadow. The desert teaches patience, resilience, and reveals beauty in the most unexpected places.",
-    image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&h=800&fit=crop",
+      "A noble family becomes embroiled in a war for control over the galaxy's most valuable asset while its heir becomes troubled by visions of a dark future.",
+    image:
+      "https://images.unsplash.com/photo-1682687982501-1e58ab814714?w=800&h=800&fit=crop",
     stats: { progress: 1, total: 3 },
   },
   {
     id: "6",
-    title: "Northern Lights",
-    subtitle: "Nature's light show",
+    title: "Aurora",
+    subtitle: "When the sky comes alive",
+    tagline:
+      "At the edge of the world, where light dances across the frozen sky, one woman discovers the truth about her past.",
     description:
-      "Witness the aurora borealis paint the night sky with ethereal colors. This celestial dance of green, purple, and blue is nature's most spectacular display.",
-    image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&h=800&fit=crop",
+      "A scientist stationed in northern Norway to study the aurora borealis uncovers an ancient mystery that connects the northern lights to her own forgotten memories.",
+    image:
+      "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&h=800&fit=crop",
     stats: { progress: 4, total: 6 },
   },
 ];

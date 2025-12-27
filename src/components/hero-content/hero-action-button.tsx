@@ -44,7 +44,7 @@ export function HeroActionButton({
   return (
     <button
       className={cn(
-        "w-full font-semibold py-3 px-6 rounded-lg flex items-center justify-center transition-colors",
+        "w-full font-semibold py-3 px-6 rounded-full flex items-center justify-center transition-colors",
         isPrimary
           ? "bg-white text-black hover:bg-white/90"
           : "border border-white/30 text-white hover:bg-white/10 bg-transparent",

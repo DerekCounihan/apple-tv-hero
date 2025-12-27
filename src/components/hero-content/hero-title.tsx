@@ -21,7 +21,7 @@ export function HeroTitle({ children, delay = 2.5, className }: HeroTitleProps) 
   return (
     <h1
       className={cn(
-        "-mt-8 font-bold text-white text-2xl leading-snug line-clamp-2 text-center",
+        "-mt-8 font-bold text-white text-2xl leading-snug line-clamp-2 text-center font-[family-name:var(--font-space-grotesk)] tracking-tight",
         "animate-in fade-in slide-in-from-bottom-2 duration-700",
         className
       )}

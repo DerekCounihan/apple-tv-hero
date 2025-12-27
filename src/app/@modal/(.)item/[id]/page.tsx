@@ -9,6 +9,7 @@ import {
 } from "@/components/parallax-hero";
 import {
   HeroTitle,
+  HeroDescription,
   HeroExtendedContent,
   HeroActionButton,
 } from "@/components/hero-content";
@@ -49,6 +50,7 @@ export default function InterceptedItemPage({ params }: PageProps) {
             >
               Get Started
             </HeroActionButton>
+            <HeroDescription>{item.tagline}</HeroDescription>
           </HeroExtendedContent>
         }
       >
