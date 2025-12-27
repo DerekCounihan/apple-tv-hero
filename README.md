@@ -7,7 +7,7 @@ Bring that gorgeous Apple TV+ parallax effect to your Next.js app! Smooth color 
 </p>
 
 <p align="center">
-  <a href="https://apple-tv-hero.vercel.app">View Live Demo</a>
+  <a href="https://apple-tv-hero-eta.vercel.app">View Live Demo</a>
 </p>
 
 ## Features
