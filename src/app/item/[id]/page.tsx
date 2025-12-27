@@ -11,7 +11,6 @@ import {
   HeroTitle,
   HeroExtendedContent,
   HeroActionButton,
-  HeroProgressBar,
 } from "@/components/hero-content";
 import { getSampleItem } from "@/data/sample-items";
 import { notFound } from "next/navigation";
@@ -42,27 +41,16 @@ export default function ItemPage({ params }: PageProps) {
         heroImage={item.image}
         heroAlt={item.title}
         title={item.title}
+        aspectRatio="auto"
         useColorExtraction={true}
         heroExtendedContent={
-          <HeroExtendedContent>
+          <HeroExtendedContent showOnDesktop>
             <HeroTitle delay={2.5}>{item.title}</HeroTitle>
-            {item.stats && (
-              <HeroProgressBar
-                total={item.stats.total}
-                completed={item.stats.progress}
-              />
-            )}
             <HeroActionButton
               onClick={() => alert("Get Started clicked!")}
               icon={<Play className="h-4 w-4" />}
             >
               Get Started
-            </HeroActionButton>
-            <HeroActionButton
-              onClick={() => alert("Learn More clicked!")}
-              variant="secondary"
-            >
-              Learn More
             </HeroActionButton>
           </HeroExtendedContent>
         }
