@@ -253,6 +253,7 @@ export function ParallaxHeroLayout({
   // Default navigation button
   const defaultLeftAction = (
     <button
+      type="button"
       onClick={handleClose}
       disabled={isDisabled}
       className="rounded-full bg-black/30 p-2 backdrop-blur-sm transition-colors hover:bg-black/50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent text-white"
@@ -265,6 +266,15 @@ export function ParallaxHeroLayout({
       <span className="sr-only">{isInModal ? "Close" : "Back"}</span>
     </button>
   );
+
+  // Determine extended area background - extracted color or fallback
+  const extendedBgStyle = extractedColor
+    ? {
+        background: useColorExtraction
+          ? `linear-gradient(to bottom, transparent 0%, ${extractedColor} 600px)`
+          : extractedColor,
+      }
+    : undefined;
 
   return (
     <div className={cn("relative min-h-full", className)}>
@@ -422,18 +432,20 @@ export function ParallaxHeroLayout({
       )}
 
       {/* Fixed action buttons - always visible over hero, fade out when header appears */}
+      {/* Layout matches sticky header exactly: px-4 py-3, w-10 button containers */}
+      {/* Glass buttons are larger (36px) than ghost buttons, so we center them to align icons */}
       <motion.div
         className="fixed top-0 left-0 right-0 z-50 px-4 py-3 flex items-center pointer-events-none xl:absolute"
         style={{ opacity: fixedButtonsOpacity }}
         aria-hidden={showStickyHeader}
       >
-        <div className="w-10 shrink-0 flex items-center justify-center pointer-events-auto">
+        <div className="w-10 flex-shrink-0 flex items-center justify-center pointer-events-auto">
           {leftAction ?? defaultLeftAction}
         </div>
         <div className="flex-1 min-w-0 flex justify-center pointer-events-auto">
           {centerAction}
         </div>
-        <div className="w-10 shrink-0 flex items-center justify-center pointer-events-auto">
+        <div className="w-10 flex-shrink-0 flex items-center justify-center pointer-events-auto">
           {rightAction}
         </div>
       </motion.div>
@@ -451,9 +463,10 @@ export function ParallaxHeroLayout({
         aria-hidden={!showStickyHeader}
       >
         <div className="flex items-center px-4 py-3">
-          <div className="w-10 shrink-0 flex items-center justify-center">
+          <div className="w-10 flex-shrink-0 flex items-center justify-center">
             {leftAction ?? (
               <button
+                type="button"
                 onClick={handleClose}
                 disabled={isDisabled}
                 className="p-2 rounded-full hover:bg-white/10 transition-colors text-white"
@@ -474,7 +487,7 @@ export function ParallaxHeroLayout({
               </p>
             )}
           </div>
-          <div className="w-10 shrink-0 flex items-center justify-center">
+          <div className="w-10 flex-shrink-0 flex items-center justify-center">
             {rightAction}
           </div>
         </div>
