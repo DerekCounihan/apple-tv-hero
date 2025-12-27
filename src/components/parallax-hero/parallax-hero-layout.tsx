@@ -356,6 +356,10 @@ export function ParallaxHeroLayout({
             Simplified Gradient Blur (SwiftUI Style):
             Single strong blur layer with a gradient mask that keeps the top sharp
             and transitions to full blur at the bottom.
+
+            Stops match the reference:
+            0% - 50%: Transition from Sharp to Blur (Overlaps bottom half of image)
+            50% - 100%: Fully Opaque (Blurred)
           */}
           {/* Blur mask: stays transparent longer at top (25%) to show more image */}
           <div
@@ -370,6 +374,7 @@ export function ParallaxHeroLayout({
           />
 
           {/* Color overlay that blends into the extracted color */}
+          {/* Gradient reaches 100% at 50% (200px) - matches image bottom and extended content top */}
           <div
             className="absolute inset-0 transition-all duration-500"
             style={{
@@ -382,13 +387,17 @@ export function ParallaxHeroLayout({
       )}
 
       {/* Extended color area below hero - Apple TV style */}
+      {/* Background color at the back (no z-index), content in front (z-20) */}
+      {/* Overlap: 200px means top edge at 200px blur coords (400-200=200) */}
+      {/* This matches where gradient reaches 100% = seamless transition */}
       {heroExtendedContent && (
         <div
           className={cn(
-            "relative",
-            useColorExtraction && "-mt-[200px]"
+            "relative", // No z-index - sits behind blur like hero container
+            useColorExtraction && "-mt-[200px]" // Top at 200px blur coords where gradient is 100% solid
           )}
           style={{
+            // Solid background color - always visible when we have it
             backgroundColor: extractedColor ?? undefined,
           }}
         >
@@ -429,10 +438,10 @@ export function ParallaxHeroLayout({
         </div>
       </motion.div>
 
-      {/* Fixed header - appears when scrolled past hero */}
+      {/* Fixed header - appears when scrolled past hero (position: fixed, not sticky) */}
       <motion.header
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800",
+          "fixed top-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-b border-white/10",
           "xl:absolute xl:max-w-3xl xl:mx-auto xl:left-0 xl:right-[70px]"
         )}
         style={{
@@ -447,7 +456,7 @@ export function ParallaxHeroLayout({
               <button
                 onClick={handleClose}
                 disabled={isDisabled}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 rounded-full hover:bg-white/10 transition-colors text-white"
               >
                 {isInModal ? (
                   <X className="h-5 w-5" />
@@ -458,9 +467,9 @@ export function ParallaxHeroLayout({
             )}
           </div>
           <div className="flex-1 min-w-0 text-center">
-            <h2 className="font-semibold text-sm truncate">{title}</h2>
+            <h2 className="font-semibold text-sm truncate text-white">{title}</h2>
             {subtitle && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+              <p className="text-xs text-white/60 truncate">
                 {subtitle}
               </p>
             )}
@@ -472,7 +481,7 @@ export function ParallaxHeroLayout({
       </motion.header>
 
       {/* Content area */}
-      <div className="relative z-10 bg-white dark:bg-black">{children}</div>
+      <div className="relative z-10 bg-black">{children}</div>
     </div>
   );
 }
