@@ -11,10 +11,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { PARALLAX, REDUCED_MOTION } from "@/lib/constants";
 import { useModalContext } from "./modal-context";
 import { useImageColor } from "./use-image-color";
 
 // Extended content reveal - slides up with significant delay after hero
+// Standard animation with slide-up effect
 const extendedContentRevealVariants = {
   hidden: { opacity: 0, y: 15 },
   visible: {
@@ -23,6 +26,19 @@ const extendedContentRevealVariants = {
     transition: {
       duration: 0.5,
       delay: 0.4, // Wait for hero to fully reveal before content appears
+      ease: "easeOut" as const,
+    },
+  },
+};
+
+// Reduced motion alternative - simple fade only, no transforms
+const extendedContentRevealVariantsReduced = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: REDUCED_MOTION.CONTENT_FADE_DURATION / 1000,
+      delay: 0.1,
       ease: "easeOut" as const,
     },
   },
@@ -102,6 +118,7 @@ export function ParallaxHeroLayout({
   const router = useRouter();
   const modalContext = useModalContext();
   const scrollContainerRef = modalContext?.scrollContainerRef;
+  const prefersReducedMotion = useReducedMotion();
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const [computedHeight, setComputedHeight] = useState(heroHeight);
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
@@ -166,9 +183,16 @@ export function ParallaxHeroLayout({
   }, [aspectRatio, heroHeight, imageAspectRatio]);
 
   // Extract dominant color from hero image for Apple TV effect
-  const { color: extractedColor } = useImageColor(
+  const { color: extractedColor, error: colorError, isLoading: colorLoading } = useImageColor(
     useColorExtraction ? heroImage : null
   );
+
+  // Log color extraction errors in development
+  useEffect(() => {
+    if (colorError && process.env.NODE_ENV === "development") {
+      console.warn("[ParallaxHeroLayout] Color extraction failed:", colorError.message);
+    }
+  }, [colorError]);
 
   // Three-phase loading:
   // 1. hasColor - color extracted successfully, solid color background established
@@ -201,17 +225,19 @@ export function ParallaxHeroLayout({
   });
 
   // Parallax effect - hero moves at 50% of scroll speed
+  // Disabled when user prefers reduced motion
   const heroY = useTransform(
     scrollY,
     [0, computedHeight],
-    [0, computedHeight * 0.5]
+    prefersReducedMotion ? [0, 0] : [0, computedHeight * PARALLAX.SCROLL_SPEED_RATIO]
   );
 
   // Scale effect when pulling down (overscroll) - subtle scale up
+  // Disabled when user prefers reduced motion
   const heroScale = useTransform(
     scrollY,
     [-100, 0, computedHeight],
-    [1.15, 1, 1]
+    prefersReducedMotion ? [1, 1, 1] : [PARALLAX.OVERSCROLL_SCALE_MAX, 1, 1]
   );
 
   // Hero opacity - subtle fade as scrolling past
@@ -308,13 +334,14 @@ export function ParallaxHeroLayout({
           }}
         >
           {/* Ken Burns effect - dramatic slow zoom out from 1.25x to 1x */}
+          {/* Disabled when user prefers reduced motion */}
           <motion.div
             className="absolute inset-0"
-            initial={{ scale: 1.25 }}
+            initial={{ scale: prefersReducedMotion ? 1 : PARALLAX.KEN_BURNS_INITIAL_SCALE }}
             animate={{
-              scale: isBlurReady && isImageReady ? 1 : 1.25,
+              scale: prefersReducedMotion ? 1 : (isBlurReady && isImageReady ? 1 : PARALLAX.KEN_BURNS_INITIAL_SCALE),
             }}
-            transition={{
+            transition={prefersReducedMotion ? { duration: 0 } : {
               duration: 10,
               delay: 1,
               ease: "easeOut",
@@ -420,9 +447,10 @@ export function ParallaxHeroLayout({
             }}
           />
           {/* Content with staggered reveal animation - waits for blur */}
+          {/* Uses simplified animation when user prefers reduced motion */}
           <motion.div
             className="relative z-20 text-white"
-            variants={extendedContentRevealVariants}
+            variants={prefersReducedMotion ? extendedContentRevealVariantsReduced : extendedContentRevealVariants}
             initial={useColorExtraction ? "hidden" : "visible"}
             animate={isBlurReady || !useColorExtraction ? "visible" : "hidden"}
           >

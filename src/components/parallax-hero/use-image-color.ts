@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LAYOUT } from "@/lib/constants";
 
 export interface ImageColorResult {
   color: string | null;
@@ -160,8 +161,12 @@ function extractColorFromImage(img: HTMLImageElement): CachedColor {
  * and populates the cache. No need to await or handle the result.
  *
  * @param imageUrl - The image URL to extract color from
+ * @param onError - Optional error callback for debugging (fires on load failure or CORS issues)
  */
-export function preWarmImageColor(imageUrl: string): void {
+export function preWarmImageColor(
+  imageUrl: string,
+  onError?: (error: Error) => void
+): void {
   if (!imageUrl) return;
 
   const cacheKey = normalizeImageUrl(imageUrl);
@@ -176,8 +181,27 @@ export function preWarmImageColor(imageUrl: string): void {
     try {
       const result = extractColorFromImage(img);
       setCacheEntry(cacheKey, result);
-    } catch {
-      // Silently fail - this is just a pre-warm optimization
+    } catch (err) {
+      // CORS or canvas error - call error handler if provided
+      const error = err instanceof Error ? err : new Error("Color extraction failed");
+      if (onError) {
+        onError(error);
+      }
+      // Log in development for debugging
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[preWarmImageColor] Extraction failed:", imageUrl, error.message);
+      }
+    }
+  };
+
+  img.onerror = () => {
+    const error = new Error(`Failed to load image: ${imageUrl}`);
+    if (onError) {
+      onError(error);
+    }
+    // Log in development for debugging
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[preWarmImageColor] Image load failed:", imageUrl);
     }
   };
 
@@ -233,8 +257,25 @@ export function useImageColor(imageUrl: string | null): ImageColorResult {
 
     const img = new Image();
     img.crossOrigin = "anonymous";
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let isCompleted = false;
+
+    // Timeout to prevent indefinite loading on slow/stuck image loads
+    timeoutId = setTimeout(() => {
+      if (!isCompleted) {
+        isCompleted = true;
+        setError(new Error("Image load timed out"));
+        setIsLoading(false);
+        img.onload = null;
+        img.onerror = null;
+      }
+    }, LAYOUT.IMAGE_LOAD_TIMEOUT);
 
     img.onload = () => {
+      if (isCompleted) return;
+      isCompleted = true;
+      if (timeoutId) clearTimeout(timeoutId);
+
       try {
         // Double-check cache before extracting (in case another component cached it)
         const nowCached = colorCache.get(cacheKey);
@@ -262,6 +303,9 @@ export function useImageColor(imageUrl: string | null): ImageColorResult {
     };
 
     img.onerror = () => {
+      if (isCompleted) return;
+      isCompleted = true;
+      if (timeoutId) clearTimeout(timeoutId);
       setError(new Error("Failed to load image"));
       setIsLoading(false);
     };
@@ -269,6 +313,8 @@ export function useImageColor(imageUrl: string | null): ImageColorResult {
     img.src = imageUrl;
 
     return () => {
+      isCompleted = true;
+      if (timeoutId) clearTimeout(timeoutId);
       img.onload = null;
       img.onerror = null;
     };
