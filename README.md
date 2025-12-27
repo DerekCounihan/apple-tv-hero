@@ -208,6 +208,51 @@ Segmented progress indicator.
 4. **Luminance Weighting** - Colors are weighted by perceptual luminance
 5. **Module Cache** - Results are cached in a Map for instant reuse
 
+## Requirements
+
+### Browser Support
+- Chrome 90+
+- Firefox 88+
+- Safari 14.1+
+- Edge 90+
+
+Requires Canvas API and ResizeObserver support.
+
+### Node.js
+- Node.js 18.17 or later
+
+### Image CORS Requirements
+
+**Important:** Color extraction requires images to be served with CORS headers. Images from different domains must include:
+
+```
+Access-Control-Allow-Origin: *
+```
+
+To use images from external domains, add them to your `next.config.ts`:
+
+```typescript
+// next.config.ts
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com", // Add your image domains here
+      },
+      {
+        protocol: "https",
+        hostname: "your-cdn.com",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
+```
+
+If CORS is not configured, color extraction will silently fall back to the default background color.
+
 ## Dependencies
 
 - `next` ^15.0.0

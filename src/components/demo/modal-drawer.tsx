@@ -76,12 +76,33 @@ export function ModalDrawer({ children }: ModalDrawerProps) {
   // Track the original overflow value to restore
   const originalOverflowRef = useRef<string>("");
 
+  // Exposed via context for child components (like CloseButton) to request close
+  const requestClose = useCallback(() => {
+    if (!isUserClosingRef.current) {
+      isUserClosingRef.current = true;
+      setOpen(false);
+    }
+  }, []);
+
   // On mount: Clear any stale scroll locks from previous sessions
   // This handles the case where someone navigates directly to a URL and
   // a previous drawer instance didn't clean up properly
   useEffect(() => {
     clearStaleScrollLocks();
   }, []);
+
+  // Keyboard support: ESC key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open && !isUserClosingRef.current) {
+        e.preventDefault();
+        requestClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, requestClose]);
 
   // Preserve scroll position when drawer opens
   useLayoutEffect(() => {
@@ -150,14 +171,6 @@ export function ModalDrawer({ children }: ModalDrawerProps) {
   // Handle user-initiated close (swipe, clicking outside, or X button via context)
   const handleOpenChange = useCallback((isOpen: boolean) => {
     if (!isOpen && !isUserClosingRef.current) {
-      isUserClosingRef.current = true;
-      setOpen(false);
-    }
-  }, []);
-
-  // Exposed via context for child components (like CloseButton) to request close
-  const requestClose = useCallback(() => {
-    if (!isUserClosingRef.current) {
       isUserClosingRef.current = true;
       setOpen(false);
     }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-interface ImageColorResult {
+export interface ImageColorResult {
   color: string | null;
   isDark: boolean;
   isLoading: boolean;
@@ -14,11 +14,38 @@ interface CachedColor {
   isDark: boolean;
 }
 
+// LRU Cache implementation with size limit to prevent unbounded memory growth
+const MAX_CACHE_SIZE = 100;
+const cacheOrder: string[] = []; // Track insertion order for LRU eviction
+
 // Module-level cache for extracted colors
 // Key: image URL (normalized), Value: extracted color data
 // This persists across component mounts, so colors extracted from thumbnails
 // are instantly available when the detail page loads
 const colorCache = new Map<string, CachedColor>();
+
+/**
+ * Adds an entry to the cache with LRU eviction
+ */
+function setCacheEntry(key: string, value: CachedColor): void {
+  // If key already exists, remove it from order array (will be re-added at end)
+  const existingIndex = cacheOrder.indexOf(key);
+  if (existingIndex > -1) {
+    cacheOrder.splice(existingIndex, 1);
+  }
+
+  // Evict oldest entries if at capacity
+  while (cacheOrder.length >= MAX_CACHE_SIZE) {
+    const oldestKey = cacheOrder.shift();
+    if (oldestKey) {
+      colorCache.delete(oldestKey);
+    }
+  }
+
+  // Add new entry
+  colorCache.set(key, value);
+  cacheOrder.push(key);
+}
 
 /**
  * Normalizes an image URL for consistent cache keys.
@@ -148,7 +175,7 @@ export function preWarmImageColor(imageUrl: string): void {
   img.onload = () => {
     try {
       const result = extractColorFromImage(img);
-      colorCache.set(cacheKey, result);
+      setCacheEntry(cacheKey, result);
     } catch {
       // Silently fail - this is just a pre-warm optimization
     }
@@ -220,8 +247,8 @@ export function useImageColor(imageUrl: string | null): ImageColorResult {
 
         const result = extractColorFromImage(img);
 
-        // Cache for future use
-        colorCache.set(cacheKey, result);
+        // Cache for future use (with LRU eviction)
+        setCacheEntry(cacheKey, result);
 
         setColor(result.color);
         setIsDark(result.isDark);

@@ -1,6 +1,29 @@
 {
   "name": "apple-tv-hero",
   "version": "0.1.0",
+  "description": "Apple TV-style parallax hero effect for Next.js with color extraction, blur transitions, and Ken Burns animation",
+  "author": "Derek Counihan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DerekCounihan/apple-tv-hero.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DerekCounihan/apple-tv-hero/issues"
+  },
+  "homepage": "https://github.com/DerekCounihan/apple-tv-hero#readme",
+  "keywords": [
+    "nextjs",
+    "react",
+    "parallax",
+    "hero",
+    "animation",
+    "apple-tv",
+    "framer-motion",
+    "color-extraction",
+    "ken-burns",
+    "blur"
+  ],
   "private": true,
   "scripts": {
     "dev": "next dev",
