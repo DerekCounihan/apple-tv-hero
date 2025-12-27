@@ -24,7 +24,7 @@ This repo includes a complete demo with:
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/apple-tv-hero.git
+git clone https://github.com/DerekCounihan/apple-tv-hero.git
 
 # Install dependencies
 pnpm install

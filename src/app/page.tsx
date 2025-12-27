@@ -58,7 +58,7 @@ export default function Home() {
         {/* GitHub Link */}
         <footer className="mt-8 text-center text-sm text-white/40">
           <a
-            href="https://github.com/yourusername/apple-tv-hero"
+            href="https://github.com/DerekCounihan/apple-tv-hero"
             className="hover:text-white/70"
             target="_blank"
             rel="noopener noreferrer"
